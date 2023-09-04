@@ -52,7 +52,7 @@ namespace PiJuiceSharp
             this.i2cDevice.Write(writeBuffer);
         }
 
-        public byte GetChecksum(Span<byte> data)
+        public static byte GetChecksum(Span<byte> data)
         {
             byte fcs = 0xFF;
             foreach (byte x in data)

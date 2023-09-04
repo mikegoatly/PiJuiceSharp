@@ -1,7 +1,7 @@
 ﻿
 namespace PiJuiceSharp
 {
-    public class PiJuiceStatus : IDisposable
+    public sealed class PiJuiceStatus : IDisposable
     {
         private const byte STATUS_CMD = 0x40;
         private const byte CHARGE_LEVEL_CMD = 0x41;
@@ -13,8 +13,6 @@ namespace PiJuiceSharp
         private const byte IO_CURRENT_CMD = 0x4f;
         private const byte LED_STATE_CMD = 0x66;
         private const byte LED_BLINK_CMD = 0x68;
-        private const byte IO_PIN_ACCESS_CMD = 0x75;
-
         private readonly PiJuiceInterface piJuiceInterface;
 
         public PiJuiceStatus(PiJuiceInterface piJuiceInterface)
@@ -43,14 +41,17 @@ namespace PiJuiceSharp
                     _ => throw new Exception("Invalid battery status")
                 };
 
-                static string MapPowerInput(int value) => value switch
+                static string MapPowerInput(int value)
                 {
-                    0 => "NOT_PRESENT",
-                    1 => "BAD",
-                    2 => "WEAK",
-                    3 => "PRESENT",
-                    _ => throw new Exception("Invalid power input status")
-                };
+                    return value switch
+                    {
+                        0 => "NOT_PRESENT",
+                        1 => "BAD",
+                        2 => "WEAK",
+                        3 => "PRESENT",
+                        _ => throw new Exception("Invalid power input status")
+                    };
+                }
 
                 status["powerInput"] = MapPowerInput((d >> 4) & 0x03);
                 status["powerInput5vIo"] = MapPowerInput((d >> 6) & 0x03);
@@ -174,14 +175,6 @@ namespace PiJuiceSharp
             Span<byte> ledData = stackalloc byte[] { color.R, color.G, color.B };
             this.piJuiceInterface.Write((byte)(LED_STATE_CMD + (byte)led), ledData);
         }
-
-        /*
-                     'count': d[0],
-                    'rgb1': d[1:4],
-                    'period1': d[4] * 10,
-                    'rgb2': d[5:8],
-                    'period2': d[8] * 10
-        */
 
         public LedBlinkState GetLedBlinkState(Led led)
         {
