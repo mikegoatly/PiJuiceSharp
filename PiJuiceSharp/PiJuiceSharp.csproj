@@ -13,7 +13,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>PiJuice RaspberryPi Battery</PackageTags>
 		<NeutralLanguage>en</NeutralLanguage>
-		<PackageId>Goatly.PiJuiceSharp</PackageId>
+		<PackageId>PiJuiceSharp</PackageId>
 		<Copyright>Mike Goatly</Copyright>
 		<AssemblyName>PiJuiceSharp</AssemblyName>
 		<LangVersion>latest</LangVersion>
@@ -24,6 +24,7 @@
 		<EnableNETAnalyzers>True</EnableNETAnalyzers>
 		<AnalysisLevel>latest-all</AnalysisLevel>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+		<Version>0.1.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
