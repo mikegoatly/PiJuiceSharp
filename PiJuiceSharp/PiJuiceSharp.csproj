@@ -5,7 +5,30 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<IsTrimmable>true</IsTrimmable>
+		<Authors>Mike Goatly</Authors>
+		<Product>PiJuiceSharp</Product>
+		<Description>A pure .NET implementation of the libraries for the PiJuice HAT.</Description>
+		<PackageProjectUrl>https://github.com/mikegoatly/PiJuiceSharp</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/mikegoatly/PiJuiceSharp</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>PiJuice RaspberryPi Battery</PackageTags>
+		<NeutralLanguage>en</NeutralLanguage>
+		<PackageId>Goatly.PiJuiceSharp</PackageId>
+		<Copyright>Mike Goatly</Copyright>
+		<AssemblyName>PiJuiceSharp</AssemblyName>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<Title>PiJuiceSharp</Title>
+		<PackageIcon>favicon-256.png</PackageIcon>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<EnableNETAnalyzers>True</EnableNETAnalyzers>
+		<AnalysisLevel>latest-all</AnalysisLevel>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Include="..\LICENSE" Link="LICENSE" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Device.Gpio" Version="3.0.0" />
