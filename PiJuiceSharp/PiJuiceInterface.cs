@@ -2,7 +2,7 @@
 
 namespace PiJuiceSharp
 {
-    public class PiJuiceInterface : IDisposable
+    public sealed class PiJuiceInterface : IDisposable
     {
         private readonly I2cDevice i2cDevice;
         private readonly int address;
@@ -35,21 +35,35 @@ namespace PiJuiceSharp
 
         public void Read(byte command, Span<byte> readBuffer)
         {
-            Span<byte> writeBuffer = stackalloc byte[1];
+            try
+            {
+                Span<byte> writeBuffer = stackalloc byte[1];
 
-            writeBuffer[0] = command;
+                writeBuffer[0] = command;
 
-            this.i2cDevice.WriteRead(writeBuffer, readBuffer);
+                this.i2cDevice.WriteRead(writeBuffer, readBuffer);
+            }
+            catch (IOException ex)
+            {
+                throw new PiJuiceException("COMMUNICATION_ERROR", ex);
+            }
         }
 
         public void Write(byte command, Span<byte> data)
         {
-            Span<byte> writeBuffer = new byte[data.Length + 2];
-            writeBuffer[0] = command;
-            data.CopyTo(writeBuffer[1..]);
-            writeBuffer[^1] = GetChecksum(data);
+            try
+            {
+                Span<byte> writeBuffer = new byte[data.Length + 2];
+                writeBuffer[0] = command;
+                data.CopyTo(writeBuffer[1..]);
+                writeBuffer[^1] = GetChecksum(data);
 
-            this.i2cDevice.Write(writeBuffer);
+                this.i2cDevice.Write(writeBuffer);
+            }
+            catch (IOException ex)
+            {
+                throw new PiJuiceException("COMMUNICATION_ERROR", ex);
+            }
         }
 
         public static byte GetChecksum(Span<byte> data)

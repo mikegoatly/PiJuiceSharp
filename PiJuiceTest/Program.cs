@@ -61,7 +61,13 @@ static void WriteColorValue(Color color)
 }
 #endregion
 
-WriteDict("Status", piJuiceStatus.GetStatus());
+StatusInfo status = piJuiceStatus.GetStatus();
+WriteHeader("Status");
+WriteLine($"Is faulted: {status.IsFault}");
+WriteLine($"Is button: {status.IsButton}");
+WriteLine($"Battery status: {status.BatteryStatus}");
+WriteLine($"Power input: {status.PowerInput}");
+WriteLine($"Power input 5V IO: {status.PowerInput5vIo}");
 
 WriteValue($"PiJuice Charge Level", piJuiceStatus.GetChargeLevel(), "%");
 

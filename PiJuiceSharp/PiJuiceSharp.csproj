@@ -25,6 +25,7 @@
 		<AnalysisLevel>latest-all</AnalysisLevel>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 		<Version>0.1.0</Version>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>

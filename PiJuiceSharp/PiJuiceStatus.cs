@@ -20,79 +20,33 @@ namespace PiJuiceSharp
             this.piJuiceInterface = piJuiceInterface;
         }
 
-        public Dictionary<string, object> GetStatus()
+        public StatusInfo GetStatus()
         {
-            try
-            {
-                byte d = this.piJuiceInterface.Read(STATUS_CMD);
+            byte d = this.piJuiceInterface.Read(STATUS_CMD);
 
-                var status = new Dictionary<string, object>
-            {
-                { "isFault", Convert.ToBoolean(d & 0x01) },
-                { "isButton", Convert.ToBoolean(d & 0x02) }
-            };
-
-                status["battery"] = ((d >> 2) & 0x03) switch
-                {
-                    0 => "NORMAL",
-                    1 => "CHARGING_FROM_IN",
-                    2 => "CHARGING_FROM_5V_IO",
-                    3 => "NOT_PRESENT",
-                    _ => throw new Exception("Invalid battery status")
-                };
-
-                static string MapPowerInput(int value)
-                {
-                    return value switch
-                    {
-                        0 => "NOT_PRESENT",
-                        1 => "BAD",
-                        2 => "WEAK",
-                        3 => "PRESENT",
-                        _ => throw new Exception("Invalid power input status")
-                    };
-                }
-
-                status["powerInput"] = MapPowerInput((d >> 4) & 0x03);
-                status["powerInput5vIo"] = MapPowerInput((d >> 6) & 0x03);
-
-                return status;
-            }
-            catch (Exception)
-            {
-                return new Dictionary<string, object> { { "error", "COMMUNICATION_ERROR" } };
-            }
+            return new StatusInfo(
+                (d & 0x01) != 0,
+                (d & 0x02) != 0,
+                (BatteryStatus)((d >> 2) & 0x03),
+                (PowerInputStatus)((d >> 4) & 0x03),
+                (PowerInputStatus)((d >> 6) & 0x03));
         }
 
         public int GetChargeLevel()
         {
-            try
-            {
-                return this.piJuiceInterface.Read(CHARGE_LEVEL_CMD);
-            }
-            catch (Exception)
-            {
-                return -1;
-            }
+            return this.piJuiceInterface.Read(CHARGE_LEVEL_CMD);
         }
         public int GetBatteryTemperature()
         {
-            try
-            {
-                (byte d0, byte _) = this.piJuiceInterface.ReadPair(BATTERY_TEMPERATURE_CMD);
+            (byte d0, byte _) = this.piJuiceInterface.ReadPair(BATTERY_TEMPERATURE_CMD);
 
-                int temp = d0;
-                if ((d0 & (1 << 7)) == (1 << 7))
-                {
-                    temp -= 1 << 8;
-                }
-
-                return temp;
-            }
-            catch (Exception)
+            int temp = d0;
+            if ((d0 & (1 << 7)) == (1 << 7))
             {
-                return -1;
+                temp -= 1 << 8;
             }
+
+            return temp;
         }
 
         public float GetBatteryVoltage()
@@ -148,16 +102,23 @@ namespace PiJuiceSharp
                     fault["battery_profile_invalid"] = true;
                 }
 
-                string[] batChargingTempEnum = new string[] { "NORMAL", "SUSPEND", "COOL", "WARM" };
                 byte tempEnum = (byte)((d >> 6) & 0x03);
                 if (tempEnum != 0)
                 {
-                    fault["charging_temperature_fault"] = batChargingTempEnum[tempEnum - 1];
+                    fault["charging_temperature_fault"] = tempEnum switch
+                    {
+                        1 => "NORMAL",
+                        2 => "SUSPEND",
+                        3 => "COOL",
+                        4 => "WARM",
+                        _ => $"UNKNOWN ({tempEnum})",
+                    };
+
                 }
             }
-            catch (Exception)
+            catch (IOException ex)
             {
-                fault.Add("error", "COMMUNICATION_ERROR");
+                throw new PiJuiceException("COMMUNICATION_ERROR", ex);
             }
 
             return fault;
@@ -213,35 +174,21 @@ namespace PiJuiceSharp
 
         private float ReadFloat(byte command)
         {
-            try
-            {
-                (byte d0, byte d1) = this.piJuiceInterface.ReadPair(command);
+            (byte d0, byte d1) = this.piJuiceInterface.ReadPair(command);
 
-                return ((d1 << 8) | d0) / 1000F;
-            }
-            catch (Exception)
-            {
-                return -1;
-            }
+            return ((d1 << 8) | d0) / 1000F;
         }
 
         private float ReadSignedFloat(byte command)
         {
-            try
+            (byte d0, byte d1) = this.piJuiceInterface.ReadPair(command);
+            int current = (d1 << 8) | d0;
+            if ((current & (1 << 15)) == (1 << 15))
             {
-                (byte d0, byte d1) = this.piJuiceInterface.ReadPair(command);
-                int current = (d1 << 8) | d0;
-                if ((current & (1 << 15)) == (1 << 15))
-                {
-                    current -= 1 << 16;
-                }
+                current -= 1 << 16;
+            }
 
-                return current / 1000F;
-            }
-            catch (Exception)
-            {
-                return -1;
-            }
+            return current / 1000F;
         }
     }
 }
