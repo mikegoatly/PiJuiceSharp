@@ -6,6 +6,14 @@ An implementation of the PiJuice client library based on the original [PiJuice P
 
 This library currently only supports a subset of the Status APIs, and other APIs such as the RTC and Power Management are not yet implemented. Implementing others should be fairly straightforward, but I just don't have a need for them at the moment - contributions are welcome if you need to extend it!
 
+## Installation
+
+You can install the library from [NuGet](https://www.nuget.org/packages/PiJuiceSharp/):
+
+``` bash
+dotnet add package PiJuiceSharp
+```
+
 ## PiJuice Status APIs
 
 You can use the `PiJuiceStatus` class to get various point-in-time status values of the PiJuice board.
