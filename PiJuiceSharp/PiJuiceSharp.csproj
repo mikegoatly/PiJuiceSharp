@@ -29,7 +29,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Include="..\LICENSE" Link="LICENSE" />
+		<None Include="..\LICENSE">
+		<Pack>True</Pack>
+		<PackagePath></PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
