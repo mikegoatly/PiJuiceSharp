@@ -1,5 +1,7 @@
 # PiJuiceSharp
 
+![PiJuiceSharp logo](/docs/favicon-256.png)
+
 An implementation of the PiJuice client library based on the original [PiJuice Python library](https://github.com/PiSupply/PiJuice/blob/master/Software/Source/pijuice.py) in pure .NET. Currently packaged as a .NET 6 library with only a dependency on `System.Device.Gpio`.
 
 This library currently only supports a subset of the Status APIs, and other APIs such as the RTC and Power Management are not yet implemented. Implementing others should be fairly straightforward, but I just don't have a need for them at the moment - contributions are welcome if you need to extend it!
