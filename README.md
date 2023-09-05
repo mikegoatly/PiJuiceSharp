@@ -16,14 +16,31 @@ var piJuiceInterface = new PiJuiceInterface();
 var piJuiceStatus = new PiJuiceStatus(piJuiceInterface);
 ```
 
-`GetStatus()` returns a dictionary containing basic status information:
+`GetStatus()` returns an object containing basic status information, defined as:
 
-```
-isFault: True
-isButton: False
-battery: CHARGING_FROM_IN
-powerInput: PRESENT
-powerInput5vIo: NOT_PRESENT
+``` csharp
+public enum BatteryStatus
+    {
+        Normal = 0,
+        ChargingFromIn = 1,
+        ChargingFrom5vIo = 2,
+        NotPresent = 3
+    }
+
+    public enum PowerInputStatus
+    {
+        NotPresent = 0,
+        Bad = 1,
+        Weak = 2,
+        Present = 3
+    }
+
+    public record struct StatusInfo(
+      bool IsFault,
+      bool IsButton,
+      BatteryStatus BatteryStatus,
+      PowerInputStatus PowerInput,
+      PowerInputStatus PowerInput5vIo);
 ```
 
 `GetChargeLevel()` returns the current charge level of the battery, as a percentage.
