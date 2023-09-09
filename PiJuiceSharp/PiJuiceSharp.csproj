@@ -24,11 +24,12 @@
 		<EnableNETAnalyzers>True</EnableNETAnalyzers>
 		<AnalysisLevel>latest-all</AnalysisLevel>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-		<Version>0.1.0</Version>
+		<Version>0.2.0</Version>
 		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig" />
 		<None Include="..\docs\favicon-256.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>

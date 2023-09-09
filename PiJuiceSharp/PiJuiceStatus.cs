@@ -51,22 +51,22 @@ namespace PiJuiceSharp
 
         public float GetBatteryVoltage()
         {
-            return ReadFloat(BATTERY_VOLTAGE_CMD);
+            return this.ReadFloat(BATTERY_VOLTAGE_CMD);
         }
 
         public float GetBatteryCurrent()
         {
-            return ReadSignedFloat(BATTERY_CURRENT_CMD);
+            return this.ReadSignedFloat(BATTERY_CURRENT_CMD);
         }
 
         public float GetGpioVoltage()
         {
-            return ReadFloat(IO_VOLTAGE_CMD);
+            return this.ReadFloat(IO_VOLTAGE_CMD);
         }
 
         public float GetGpioCurrent()
         {
-            return ReadSignedFloat(IO_CURRENT_CMD);
+            return this.ReadSignedFloat(IO_CURRENT_CMD);
         }
 
         public Dictionary<string, object> GetFaultStatus()

@@ -9,6 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiJuiceSharp", "PiJuiceShar
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{122F1D51-9A0D-4EB8-AC69-CC1992705310}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		.github\workflows\build-and-test.yml = .github\workflows\build-and-test.yml
 		docs\favicon-256.png = docs\favicon-256.png

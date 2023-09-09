@@ -86,3 +86,8 @@ public record struct LedBlinkState(byte Count, Color Rgb1, short Period1, Color 
 ```
 
 `SetLedBlinkState(Led led, LedBlinkState state)` sets the blinking state of either the `Led.D1` or `Led.D2` LED to the given `LedBlinkState`. (Note that if the LED is not in a user configurable state, this will have no effect.)
+
+## Thread safety
+
+By using a single `SemaphoreSlim` instance across all instances of `PiJuiceInterface`, the library guarantees that thread safety is enforced 
+when communicating with the PiJuice.
