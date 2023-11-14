@@ -1,4 +1,5 @@
 ﻿using System.Device.I2c;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PiJuiceSharp
 {
@@ -8,12 +9,25 @@ namespace PiJuiceSharp
         private readonly I2cDevice i2cDevice;
         private readonly int address;
 
-
-        public PiJuiceInterface(int busId = 1, int deviceAddress = 0x14)
+        private PiJuiceInterface(int busId = 1, int deviceAddress = 0x14)
         {
             var settings = new I2cConnectionSettings(busId, deviceAddress);
             this.i2cDevice = I2cDevice.Create(settings);
             this.address = deviceAddress;
+        }
+
+        public static bool TryConnect([NotNullWhen(true)] out PiJuiceInterface? piJuiceInterface)
+        {
+            try
+            {
+                piJuiceInterface = new PiJuiceInterface();
+                return true;
+            }
+            catch (IOException)
+            {
+                piJuiceInterface = null;
+                return false;
+            }
         }
 
         public void Dispose()

@@ -2,9 +2,7 @@
 
 using static System.Console;
 
-var piJuiceInterface = new PiJuiceInterface();
-
-var piJuiceStatus = new PiJuiceStatus(piJuiceInterface);
+IPiJuiceStatus piJuiceStatus = PiJuiceStatus.Create();
 
 #region Console writing function
 static void WriteHeader(string header)

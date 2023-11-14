@@ -1,7 +1,7 @@
 ﻿
 namespace PiJuiceSharp
 {
-    public sealed class PiJuiceStatus : IDisposable
+    public sealed class PiJuiceStatus : IPiJuiceStatus
     {
         private const byte STATUS_CMD = 0x40;
         private const byte CHARGE_LEVEL_CMD = 0x41;
@@ -15,9 +15,21 @@ namespace PiJuiceSharp
         private const byte LED_BLINK_CMD = 0x68;
         private readonly PiJuiceInterface piJuiceInterface;
 
-        public PiJuiceStatus(PiJuiceInterface piJuiceInterface)
+        private PiJuiceStatus(PiJuiceInterface piJuiceInterface)
         {
             this.piJuiceInterface = piJuiceInterface;
+        }
+
+        public static IPiJuiceStatus Create()
+        {
+#pragma warning disable CA2000 // Dispose objects before losing scope - the PiJuiceInterface is disposed by the returned object
+            if (PiJuiceInterface.TryConnect(out PiJuiceInterface? piJuiceInterface))
+            {
+                return new PiJuiceStatus(piJuiceInterface);
+            }
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
+            return new AbsentPiJuiceStatus();
         }
 
         public StatusInfo GetStatus()

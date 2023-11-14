@@ -2,9 +2,15 @@
 
 ![PiJuiceSharp logo](/docs/favicon-256.png)
 
-An implementation of the PiJuice client library based on the original [PiJuice Python library](https://github.com/PiSupply/PiJuice/blob/master/Software/Source/pijuice.py) in pure .NET. Currently packaged as a .NET 6 library with only a dependency on `System.Device.Gpio`.
+An implementation of the PiJuice client library based on the original [PiJuice Python library](https://github.com/PiSupply/PiJuice/blob/master/Software/Source/pijuice.py) 
+in pure .NET. Currently packaged as a .NET 6 library with only a dependency on `System.Device.Gpio`.
 
-This library currently only supports a subset of the Status APIs, and other APIs such as the RTC and Power Management are not yet implemented. Implementing others should be fairly straightforward, but I just don't have a need for them at the moment - contributions are welcome if you need to extend it!
+Only a subset of the Status APIs are currently supported, and other APIs such as the RTC and Power Management are not yet implemented. 
+Implementing others should be fairly straightforward, but I just don't have a need for them at the moment - contributions are welcome if you 
+need to extend it!
+
+This library is safe to use even if you don't know that the device will have a PiJuice attached. When a PiJuice isn't present, 
+default values will be returned for all APIs, and a value of `NoPiJuice` for `GetStatus().BatteryStatus`.
 
 ## Installation
 
@@ -14,17 +20,24 @@ You can install the library from [NuGet](https://www.nuget.org/packages/PiJuiceS
 dotnet add package PiJuiceSharp
 ```
 
-## PiJuice Status APIs
+## PiJuiceStatus
 
 You can use the `PiJuiceStatus` class to get various point-in-time status values of the PiJuice board.
 
-To construct a `PiJuiceStatus`, you need to pass in an instance of `PiJuiceInterface`.
+To construct a `PiJuiceStatus`, call `PiJuiceStatus.Create()`. This returns an implementation of `IPiJuiceStatus` which will be either a 
+fully connected `PiJuiceStatus` instance or an `AbsentPiJuiceStatus` instance which handles the case when no PiJuice was present.
 
 ``` csharp
-var piJuiceInterface = new PiJuiceInterface();
-
-var piJuiceStatus = new PiJuiceStatus(piJuiceInterface);
+var piJuiceStatus = PiJuiceStatus.Create();
 ```
+
+If you're using dependency injection, you can configure the `IPiJuiceStatus` interface as a singleton:
+
+``` csharp
+services.AddSingleton<IPiJuiceStatus>(PiJuiceStatus.Create());
+```
+
+## PiJuice Status APIs
 
 `GetStatus()` returns an object containing basic status information, defined as:
 
@@ -34,7 +47,8 @@ public enum BatteryStatus
         Normal = 0,
         ChargingFromIn = 1,
         ChargingFrom5vIo = 2,
-        NotPresent = 3
+        NotPresent = 3,
+        NoPiJuice = 8000
     }
 
     public enum PowerInputStatus
